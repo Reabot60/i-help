@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Creation</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            height: 80%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        h4, h1 {
+            color: black;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none; /* Hide all inputs initially */
+        }
+
+        input.active {
+            display: block; /* Show input when active */
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .login-redirect {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-redirect.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="accountContainer">
+        <h4>What's your name?</h4>
+        <form id="accountForm">
+            <input id="fullName" type="text" placeholder="Full name" class="active">
+            <input id="dob" type="date" placeholder="Enter your date of birth">
+            <input id="phone" type="tel" placeholder="Enter your mobile number">
+            <input id="email" type="email" placeholder="Enter your email">
+            <input id="password" type="password" placeholder="Create a password">
+            <input id="username" type="text" placeholder="Create a username">
+            <button type="button" id="nextButton">Next</button>
+        </form>
+        <div class="login-redirect" id="loginRedirect">
+            <h1>Account Created!</h1>
+            <button onclick="window.location.href='./log.html'">Go to Login</button>
+        </div>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('input');
+        const nextButton = document.getElementById('nextButton');
+        const container = document.getElementById('accountContainer');
+        const loginRedirect = document.getElementById('loginRedirect');
+        let currentStep = 0;
+
+        nextButton.addEventListener('click', () => {
+            if (currentStep < inputs.length - 1) {
+                // Validate the current input
+                if (inputs[currentStep].value.trim() === '') {
+                    alert('Please fill in the current field.');
+                    return;
+                }
+
+                // Hide current input and show the next one
+                inputs[currentStep].classList.remove('active');
+                currentStep++;
+                inputs[currentStep].classList.add('active');
+
+                // Change button text to "Submit" on last step
+                if (currentStep === inputs.length - 1) {
+                    nextButton.textContent = 'Submit';
+                }
+            } else {
+                // Validate last input and save to localStorage
+                if (inputs[currentStep].value.trim() === '') {
+                    alert('Please fill in the current field.');
+                    return;
+                }
+
+                const accountData = {
+                    fullName: document.getElementById('fullName').value,
+                    dob: document.getElementById('dob').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    username: document.getElementById('username').value,
+                };
+
+                localStorage.setItem('accountData', JSON.stringify(accountData));
+
+                // Flip the page to show the login redirect
+                container.style.transform = 'rotateY(360deg)';
+                setTimeout(() => {
+                    document.getElementById('accountForm').style.display = 'none';
+                    loginRedirect.classList.add('active');
+                }, 600);
+            }
+        });
+    </script>
+</body>
+</html>

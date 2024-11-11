@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i-HELP Login</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #fdfcfb, #e2d1c3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 300px;
+            height: 80%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input.invalid {
+            border-color: red;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 10px;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .create-account {
+            padding: 10px;
+            border: 1px solid #28a745;
+            border-radius: 20px;
+            background-color: transparent;
+            color: #28a745;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .create-account:hover {
+            background-color: #e8f5e9;
+        }
+
+        .wiggle {
+            transform: translateX(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>i-HELP</h1>
+        <form id="loginForm">
+            <input id="identifier" type="text" placeholder="Username, email, or mobile number" required>
+            <input id="password" type="password" placeholder="Password" required>
+            <button type="submit">Log in</button>
+        </form>
+        <a href="#" class="forgot-password">Forgot password?</a>
+        <a href="./login.html" class="forgot-password">
+             <button id="createAccount" class="create-account">Create new account</button>
+        </a>
+       
+    </div>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const identifierInput = document.getElementById("identifier");
+            const passwordInput = document.getElementById("password");
+            const createAccountBtn = document.getElementById("createAccount");
+
+            // Retrieve stored account data from localStorage
+            const storedAccount = JSON.parse(localStorage.getItem("accountData"));
+
+            if (!storedAccount) {
+                alert("No account data found. Please create an account first.");
+                return;
+            }
+
+            const { username, email, phone, password } = storedAccount;
+            const identifier = identifierInput.value.trim();
+            const inputPassword = passwordInput.value;
+
+            let valid = false;
+
+            // Check if identifier matches username, email, or phone and password matches
+            if ((identifier === username || identifier === email || identifier === phone) && inputPassword === password) {
+                valid = true;
+            }
+
+            if (!valid) {
+                identifierInput.classList.add("invalid");
+                passwordInput.classList.add("invalid");
+
+                // Wiggle the create account button
+                createAccountBtn.classList.add("wiggle");
+                setTimeout(() => {
+                    createAccountBtn.classList.remove("wiggle");
+                }, 300);
+            } else {
+                // Successful login
+                alert(`Welcome back, ${username}!`);
+                window.location.href = "./preview.html"; // Redirect to another page or preview a picture.
+            }
+        });
+    </script>
+</body>
+</html>
